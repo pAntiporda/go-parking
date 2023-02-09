@@ -38,4 +38,59 @@ class UserAuthenticationEndpointTest extends TestCase
             ->postJson(route('auth.register'), $user->toArray())
             ->assertJsonValidationErrorFor('email');
     }
+
+
+
+    public function test_it_should_login_successfully()
+    {
+        $userPassword = 'testPassword';
+        $user = User::create([
+            'name' => 'Test Name',
+            'email' => 'test@email.com',
+            'password' => bcrypt($userPassword),
+        ]);
+
+        $this
+            ->postJson(route('auth.login'), [
+                'email' => $user->email,
+                'password' => $userPassword,
+            ])
+            ->assertSuccessful();
+
+        $this->assertDatabaseHas('personal_access_tokens', ['name' => 'web_token']);
+    }
+
+    public function test_it_should_not_login_with_invalid_data()
+    {
+        $userPassword = 'testPassword';
+
+        User::create([
+            'name' => 'Test Name',
+            'email' => 'test@email.com',
+            'password' => bcrypt($userPassword),
+        ]);
+
+        $this
+            ->postJson(route('auth.login'), [
+                'email' => 'Test Email',
+                'password' => $userPassword,
+            ])
+            ->assertJsonValidationErrorFor('email');
+    }
+
+    public function test_it_should_not_login_with_incorrect_credentials()
+    {
+        $user = User::create([
+            'name' => 'Test Name',
+            'email' => 'test@email.com',
+            'password' => bcrypt('testPassword'),
+        ]);
+
+        $this
+            ->postJson(route('auth.login'), [
+                'email' => $user->email,
+                'password' => 'wrongPassword',
+            ])
+            ->assertUnauthorized();
+    }
 }

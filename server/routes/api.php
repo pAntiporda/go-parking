@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserAuthController;
 
 
 Route::get('/', function () {
@@ -16,3 +17,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/auth/register', [UserController::class, 'store'])->name('auth.register');
+Route::post('/auth/login', [UserAuthController::class, 'store'])->name('auth.login');
