@@ -108,4 +108,11 @@ class UserAuthenticationEndpointTest extends TestCase
             ->postJson(route('auth.logout'))
             ->assertNoContent();
     }
+
+    public function test_it_should_only_allow_logout_when_authenticated()
+    {
+        $this
+            ->postJson(route('auth.logout'))
+            ->assertUnauthorized();
+    }
 }
