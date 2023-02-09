@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\User;
 use Tests\TestCase;
+use Laravel\Sanctum\Sanctum;
 
 class UserAuthenticationEndpointTest extends TestCase
 {
@@ -92,5 +92,20 @@ class UserAuthenticationEndpointTest extends TestCase
                 'password' => 'wrongPassword',
             ])
             ->assertUnauthorized();
+    }
+
+    public function test_it_should_logout_current_authenticated_user()
+    {
+        $user = User::create([
+            'name' => 'Test Name',
+            'email' => 'test@email.com',
+            'password' => bcrypt('testPassword'),
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this
+            ->postJson(route('auth.logout'))
+            ->assertNoContent();
     }
 }
