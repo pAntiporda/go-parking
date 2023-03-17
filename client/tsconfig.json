@@ -17,18 +17,22 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": [
+        "./*"
+      ]
+    },
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    "**/*.json",
+    "**/.*.js",
+    "**/*.js"
   ],
   "exclude": [
     "node_modules"
